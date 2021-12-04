@@ -1,7 +1,7 @@
 CREATE DATABASE projectsdb
 
-CREATE TABLE projects {
-  id SERIAL PRIMARY KEY,
-  title VARCHAR(255) UNIQUE,
-  description VARCHAR(255),
-}
+CREATE TABLE project(
+id SERIAL PRIMARY KEY,
+title VARCHAR(255) UNIQUE,
+description VARCHAR(255)
+);

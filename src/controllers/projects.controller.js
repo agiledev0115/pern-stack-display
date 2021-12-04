@@ -1,11 +1,11 @@
 const pool = require('../db');
 
 const createProject = async (req, res, next) => {
-	try {
-		const { title, description } = req.body;
+  const { title, description } = req.body;
 
+  try {
 		const newProject = await pool.query(
-			'INSERT INTO Project (title, description) VALUES($1, $2) RETURNING *',
+			'INSERT INTO project (title, description) VALUES($1, $2) RETURNING *',
 			[title, description]
 		);
 
@@ -17,7 +17,7 @@ const createProject = async (req, res, next) => {
 
 const getAllProjects = async (req, res, next) => {
 	try {
-		const allProjects = await pool.query('SELECT * FROM Project');
+		const allProjects = await pool.query('SELECT * FROM project');
 		res.json(allProjects.rows);
 	} catch (error) {
 		next(error);
@@ -27,7 +27,7 @@ const getAllProjects = async (req, res, next) => {
 const getProject = async (req, res) => {
 	try {
 		const { id } = req.params;
-		const result = await pool.query('SELECT * FROM Project WHERE id = $1', [
+		const result = await pool.query('SELECT * FROM project WHERE id = $1', [
 			id,
 		]);
 
@@ -46,7 +46,7 @@ const updateProject = async (req, res) => {
 		const { title, description } = req.body;
 
 		const result = await pool.query(
-			'UPDATE Project SET title = $1, description = $2 WHERE id = $3 RETURNING *',
+			'UPDATE project SET title = $1, description = $2 WHERE id = $3 RETURNING *',
 			[title, description, id]
 		);
 
@@ -62,7 +62,7 @@ const updateProject = async (req, res) => {
 const deleteProject = async (req, res) => {
 	try {
 		const { id } = req.params;
-		const result = await pool.query('DELETE FROM Project WHERE id = $1', [id]);
+		const result = await pool.query('DELETE FROM project WHERE id = $1', [id]);
 
 		if (result.rowCount === 0)
 			return res.status(404).json({ message: 'Project not found' });

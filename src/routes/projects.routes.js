@@ -6,9 +6,9 @@ const {
 	updateProject,
 	deleteProject,
 } = require('../controllers/projects.controller');
-
 const router = Router();
 
+// routes to create, read, update and delete projects
 router.post('/projects', createProject);
 router.get('/projects', getAllProjects);
 router.get('/projects/:id', getProject);
