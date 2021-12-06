@@ -1,3 +1,4 @@
+import React from 'react';
 import {
 	Box,
 	AppBar,
@@ -6,7 +7,8 @@ import {
 	Typography,
 	Button,
 } from '@mui/material';
-import React from 'react';
+import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
+
 import { Link, useNavigate } from 'react-router-dom';
 
 export default function Navbar() {
@@ -18,17 +20,18 @@ export default function Navbar() {
 				<Container>
 					<Toolbar>
 						<Typography variant="h6" sx={{ flexGrow: 1 }}>
-							<Link to="/" style={{ textDecoration: "none", color: "white" }}>
+							<Link to="/" style={{ textDecoration: 'none', color: 'white' }}>
 								Project Database
 							</Link>
 						</Typography>
 
 						<Button
 							variant="contained"
+							startIcon={<CreateNewFolderIcon />}
 							color="success"
 							onClick={() => navigate('/projects/new')}
 						>
-							New Project
+							New
 						</Button>
 					</Toolbar>
 				</Container>

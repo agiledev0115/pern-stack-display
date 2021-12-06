@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import {
 	Grid,
@@ -9,8 +9,9 @@ import {
 	CardContent,
 	TextField,
 	Button,
-  CircularProgress
+	CircularProgress,
 } from '@mui/material';
+import SaveIcon from '@mui/icons-material/Save';
 
 const ProjectForm = () => {
 	const [project, setProject] = useState({
@@ -18,29 +19,57 @@ const ProjectForm = () => {
 		description: '',
 	});
 	const [loading, setLoading] = useState(false);
+	const [editing, setEditing] = useState(false);
 
+	const params = useParams();
 	const navigate = useNavigate();
 
-	const handleSubmit = async (e) => {
-		e.preventDefault();
+	useEffect(() => {
+		if (params.id) {
+			loadProject(params.id);
+		}
+	}, [params.id]);
 
+	const handleSubmit = async (event) => {
+		event.preventDefault();
 		setLoading(true);
 
-		console.log('project:', project, ' type: ', typeof project);
-		const res = await fetch('http://localhost:4000/projects', {
-			method: 'POST',
-			body: JSON.stringify(project),
-			headers: { 'Content-Type': 'application/json' },
-		});
-		const data = await res.json();
-		console.log('data: ', data);
+		try {
+			if (editing) {
+				const response = await fetch(
+					'http://localhost:4000/projects/' + params.id,
+					{
+						method: 'PUT',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify(project),
+					}
+				);
+				await response.json();
+			} else {
+				const response = await fetch('http://localhost:4000/projects', {
+					method: 'POST',
+					body: JSON.stringify(project),
+					headers: { 'Content-Type': 'application/json' },
+				});
+				await response.json();
+			}
 
-		setLoading(false);
-		navigate('/');
+			setLoading(false);
+			navigate('/');
+		} catch (error) {
+			console.error(error);
+		}
 	};
 
 	const handleChange = (e) => {
 		setProject({ ...project, [e.target.name]: e.target.value });
+	};
+
+	const loadProject = async (id) => {
+		const response = await fetch(`http://localhost:4000/projects/${id}`);
+		const data = await response.json();
+		setProject({ title: data.title, description: data.description });
+		setEditing(true);
 	};
 
 	return (
@@ -56,7 +85,7 @@ const ProjectForm = () => {
 					style={{ backgroundColor: '#455A64', padding: '1rem' }}
 				>
 					<Typography variant="h5" textAlign="center" color="white">
-						New Project
+						Project Details
 					</Typography>
 					<CardContent>
 						<form onSubmit={handleSubmit}>
@@ -65,6 +94,7 @@ const ProjectForm = () => {
 								label="project title"
 								sx={{ display: 'block', margin: '.5rem 0' }}
 								name="title"
+								value={project.title}
 								onChange={handleChange}
 								inputProps={{ style: { color: 'white' } }}
 								InputLabelProps={{ style: { color: 'white' } }}
@@ -73,27 +103,38 @@ const ProjectForm = () => {
 								variant="filled"
 								label="project description"
 								multiline
-								rows={4}
+								rows={6}
 								sx={{ display: 'block', margin: '.5rem 0' }}
 								name="description"
+								value={project.description}
 								onChange={handleChange}
 								inputProps={{ style: { color: 'white' } }}
 								InputLabelProps={{ style: { color: 'white' } }}
 							/>
 
-							<Button variant="contained" color="primary" type="submit" disabled={!project.title || !project.description}>
-								{loading ? (
-                  <CircularProgress color="inherit" size={24}/>
-                ) : (
-                  "Create"
-                )}
-							</Button>
+							{
+								<div style={{ textAlign: 'center', padding: '1rem' }}>
+									<Button
+										variant="contained"
+										startIcon={<SaveIcon />}
+										color="primary"
+										type="submit"
+										disabled={!project.title || !project.description}
+									>
+										{loading ? (
+											<CircularProgress color="inherit" size={24} />
+										) : (
+											'Save'
+										)}
+									</Button>
+								</div>
+							}
 						</form>
 					</CardContent>
 				</Card>
 			</Grid>
 		</Grid>
 	);
-}
+};
 
-export default ProjectForm
+export default ProjectForm;

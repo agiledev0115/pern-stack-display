@@ -7,7 +7,6 @@ import ProjectList from './components/ProjectList';
 import ProjectForm from './components/ProjectForm';
 
 export default function App() {
-
 	return (
 		<BrowserRouter>
 			<Menu />
@@ -15,6 +14,7 @@ export default function App() {
 				<Routes>
 					<Route path="/" element={<ProjectList />} />
 					<Route path="/projects/new" element={<ProjectForm />} />
+					<Route path="/projects/:id/edit" element={<ProjectForm />} />
 				</Routes>
 			</Container>
 		</BrowserRouter>
